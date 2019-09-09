@@ -1,4 +1,4 @@
-# Navigation
+# Continuous Control
 
 ## Table of Contents
 
