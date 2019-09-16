@@ -17,6 +17,7 @@
 
 - Root /
     - README.md (This readme file)
+    - model.py (The neural network)
     - images /  
         - random_agent.gif  (Animated image of environment)
         
