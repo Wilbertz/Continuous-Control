@@ -9,12 +9,16 @@
 5. [Results](#results)
 
 ## Introduction <a name="introduction"></a>
+<p align="center">
+    <img src="./images/random_agent.gif" width="800" title="Random Agent" alt="Random Agent.">
+</p>
 
 ## Directory Structure <a name="directoryStructure"></a>
 
 - Root /
     - README.md (This readme file)
     - images /  
+        - random_agent.gif  (Animated image of environment)
         
 ## Installation <a name="installation"></a>
 
