@@ -5,7 +5,7 @@ import random
 from model import Actor
 
 import torch
-import torch.nn.functional as F
+import torch.nn.functional as f
 import torch.optim as optim
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
