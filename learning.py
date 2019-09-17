@@ -10,3 +10,5 @@ import torch.nn.functional as f
 import torch.optim as optim
 
 from agent import Agent
+
+env = UnityEnvironment(file_name='Reacher_Linux_NoVis/Reacher.x86_64')
