@@ -19,6 +19,7 @@
     - README.md (This readme file)
     - model.py (The neural network)
     - agent.py (The agent used for learning)
+    - learning.py (A collection of methods for learning)
     - images /  
         - random_agent.gif  (Animated image of environment)
         
