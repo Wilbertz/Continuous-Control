@@ -25,6 +25,7 @@ torque applicable to two joints. Every entry in the action vector should be a nu
 
 - Root /
     - README.md (This readme file)
+    - Continuous_Control.ipynb (The Jupyter notebook)
     - model.py (The neural network)
     - agent.py (The agent used for learning)
     - learning.py (A collection of methods for learning)
