@@ -6,5 +6,6 @@ import torch.nn.functional as f
 
 
 class Actor(nn.Module):
-    pass
+    def forward(self, *input):
+        pass
 
