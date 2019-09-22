@@ -10,7 +10,9 @@ The report contains three parts:
 
 ## Design and Implementation
 
- ### Hyperparameters
+The implementation uses the actor-critic method. 
+
+### Hyperparameters
 
   The code uses a lot of hyperparameters. The values a are given below
 
