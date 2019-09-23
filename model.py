@@ -27,6 +27,6 @@ class Critic(nn.Module):
     def __init__(self, state_size, action_size, fc1=256, fc2=128, fc3=128, leak=0.01, seed=42):
         super(Critic, self).__init__()
 
-    def forward(self, *input):
+    def forward(self, state):
         pass
 
