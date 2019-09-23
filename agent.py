@@ -45,6 +45,21 @@ class Agent:
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, seed)
         self.time_steps = 0
 
+    def step(self, states, actions, rewards, next_states, dones):
+        pass
+
+    def act(self, states, add_noise=True):
+        pass
+
+    def reset(self):
+        self.noise.reset()
+
+    def learn(self, experiences, gamma):
+        pass
+
+    def soft_update(self, local_model, target_model, tau):
+        pass
+
 
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
