@@ -46,10 +46,24 @@ class Agent:
         self.time_steps = 0
 
     def step(self, states, actions, rewards, next_states, dones):
-        pass
+        self.timesteps += 1
+        for i in range(self.n_agents):
+            self.memory.add(states[i], actions[i], rewards[i], next_states[i], dones[i])
+
+        if (len(self.memory) > BATCH_SIZE) and (self.timesteps % 20 == 0):
+            for _ in range(10):
+                experiences = self.memory.sample()
+                self.learn(experiences, GAMMA)
 
     def act(self, states, add_noise=True):
-        pass
+        states = torch.from_numpy(states).float().to(device)
+        self.actor_local.eval()
+        with torch.no_grad():
+            actions = self.actor_local(states).cpu().data.numpy()
+        self.actor_local.train()
+        if add_noise:
+            actions += [self.noise.sample() for _ in range(self.n_agents)]
+        return np.clip(actions, -1, 1)
 
     def reset(self):
         self.noise.reset()
