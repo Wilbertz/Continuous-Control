@@ -6,6 +6,7 @@ from model import Actor, Critic
 
 import torch
 import torch.optim as optim
+import torch.nn.functional as f
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -46,11 +47,11 @@ class Agent:
         self.time_steps = 0
 
     def step(self, states, actions, rewards, next_states, dones):
-        self.timesteps += 1
+        self.time_steps += 1
         for i in range(self.n_agents):
             self.memory.add(states[i], actions[i], rewards[i], next_states[i], dones[i])
 
-        if (len(self.memory) > BATCH_SIZE) and (self.timesteps % 20 == 0):
+        if (len(self.memory) > BATCH_SIZE) and (self.time_steps % 20 == 0):
             for _ in range(10):
                 experiences = self.memory.sample()
                 self.learn(experiences, GAMMA)
@@ -74,12 +75,12 @@ class Agent:
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
         actions_next = self.actor_target(next_states)
-        Q_targets_next = self.critic_target(next_states, actions_next)
+        q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
-        Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
+        q_targets = rewards + (gamma * q_targets_next * (1 - dones))
         # Compute critic loss
-        Q_expected = self.critic_local(states, actions)
-        critic_loss = F.mse_loss(Q_expected, Q_targets)
+        q_expected = self.critic_local(states, actions)
+        critic_loss = f.mse_loss(q_expected, q_targets)
         # Minimize the loss
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
@@ -97,7 +98,8 @@ class Agent:
         self.soft_update(self.critic_local, self.critic_target, TAU)
         self.soft_update(self.actor_local, self.actor_target, TAU)
 
-    def soft_update(self, local_model, target_model, tau):
+    @staticmethod
+    def soft_update(local_model, target_model, tau):
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau * local_param.data + (1.0 - tau) * target_param.data)
 
