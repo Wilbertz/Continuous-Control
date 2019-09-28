@@ -2,12 +2,13 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as f
+
 
 def hidden_init(layer):
     fan_in = layer.weight.data.size()[0]
     lim = 1. / np.sqrt(fan_in)
-    return (-lim, lim)
+    return -lim, lim
 
 
 class Actor(nn.Module):
@@ -40,10 +41,10 @@ class Actor(nn.Module):
 
     def forward(self, state):
         """Build an actor (policy) network that maps states -> actions."""
-        x = F.relu(self.bn1(self.fc1(state)))
+        x = f.relu(self.bn1(self.fc1(state)))
         
-        x = F.relu(self.fc2(x))
-        return F.tanh(self.fc3(x))
+        x = f.relu(self.fc2(x))
+        return f.tanh(self.fc3(x))
 
 
 class Critic(nn.Module):
@@ -77,8 +78,8 @@ class Critic(nn.Module):
 
     def forward(self, state, action):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
-        xs = F.relu(self.bn1(self.fcs1(state)))
+        xs = f.relu(self.bn1(self.fcs1(state)))
         
         x = torch.cat((xs, action), dim=1)
-        x = F.relu(self.fc2(x))
+        x = f.relu(self.fc2(x))
         return self.fc3(x)
