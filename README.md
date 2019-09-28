@@ -55,3 +55,10 @@ Execute the learning method ddpg. (This will take around 80 minute when using GP
 scores = ddpg()
 
 ## Results <a name="results"></a>
+
+The environment was solved in 100 episodes. Below is a plot with the scores:
+
+![scores](images/scores_plot.png)
+
+A more detailed description of the results can be found in the Report.md file.
+
