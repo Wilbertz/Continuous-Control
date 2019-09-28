@@ -22,9 +22,15 @@ being learned which is, in turn, used to train the actor.
 
   The code uses a lot of hyperparameters. The values a are given below
 
-  | Hyperparameter                      | Value  |
-  | ----------------------------------- | ------ |
-  | Gamma (discount factor)             | 0.99   |
+  | Hyperparameter                      | Value   |
+  | ----------------------------------- | ------- |
+  | Gamma (discount factor)             | 0.99    |
+  | Tau                                 | 1e-3    |
+  | Learning rate actor                 | 1e-3    |
+  | Learning rate critic                | 1e-3    |
+  | Batch size                          | 1024    |
+  | Replay buffer size                  | 1000000 |
+
   
 ## Results
 
