@@ -33,6 +33,11 @@ being learned which is, in turn, used to train the actor.
 
   
 ## Results
+The environment was solved in 100 episodes. Below is a plot with the scores:
+
+![scores](images/scores_plot.png)
 
 ## Ideas for improvement
+
+Last not least, hyperparameter search should improve the performance too.
 
