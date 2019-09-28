@@ -41,7 +41,26 @@ torque applicable to two joints. Every entry in the action vector should be a nu
 This project was written in Python 3.6, using a Jupyter Notebook on Anaconda. Currently (Septemebr 2019) you cannot use Python 3.7, since tensorflow 1.7.1 doesn't have a version corresponding to python 3.7 yet.
 
 The relevant Python packages for this project are as follows:
+ - numpy
+ - torch
+ - torch.nn
+ - torch.nn.functional
+ - torch.optim 
+ - matplotlib.pyplot
+ - unityagents
+ 
+In order to use the code you have to download the environment from one of the links below.  
 
+You need only select the environment that matches your operating system:
+
+Version 2: Twenty (20) Agents_**
+ - Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Linux.zip) 
+ - Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher.app.zip)
+ - Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86.zip)
+ - Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86_64.zip)
+
+Place the file in the GitHub repository and unzip (or decompress) the file. 
+       
 ## Instructions <a name="instructions"></a>
 
 Follow the instructions in Continuous_Control.ipynb to get started.
