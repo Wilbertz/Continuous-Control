@@ -6,7 +6,7 @@ from collections import namedtuple, deque
 from model import Actor, Critic
 
 import torch
-import torch.nn.functional as F
+import torch.nn.functional as f
 import torch.optim as optim
 
 
@@ -94,12 +94,12 @@ class Agent:
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
         actions_next = self.actor_target(next_states)
-        Q_targets_next = self.critic_target(next_states, actions_next)
+        q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
-        Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
+        q_targets = rewards + (gamma * q_targets_next * (1 - dones))
         # Compute critic loss
-        Q_expected = self.critic_local(states, actions)
-        critic_loss = F.mse_loss(Q_expected, Q_targets)
+        q_expected = self.critic_local(states, actions)
+        critic_loss = f.mse_loss(q_expected, q_targets)
         # Minimize the loss
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
