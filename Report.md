@@ -9,14 +9,39 @@ The report contains three parts:
 - **Future Improvements** 
 
 ## Design and Implementation
+The design and implementation is heavily influenced by the paper [Continuous control with deep
+reinforcement learning](https://arxiv.org/abs/1509.02971). In particular the networks architectures 
+for both actor and critic and specific values for most hyperparameters are based on this paper.
 
-The basic algorithm lying under the hood is an actor-critic method. 
-Policy-based methods like REINFORCE, which use a Monte-Carlo estimate, have the problem of 
-high variance. TD estimates used in value-based methods have low bias and low variance. 
-Actor-critic methods marry these two ideas where the actor is a neural network which
-updates the policy and the critic is another neural network which evaluates the policy 
-being learned which is, in turn, used to train the actor.
+A model-free, off-policy actor-critic algorithm using deep function approximators 
+that can learn policies in high-dimensional continuous action spaces, is used.
 
+Model-free policy based learning algorithms are algorithms in which the agent learns
+directly from the un-processed observation spaces without domain knowledge.
+
+The Learning algorithm uses the Actor-Critic model in which the Critic model learns the value
+function like DQN and uses it to determine how the Actor’s policy should change. 
+
+This is different compared with DQN that learn indirectly through Q-values tables. The  implemented 
+algorithms learns from the observation spaces using policy gradients. 
+
+Initial attempts to solve the problem had to deal with significant instabilities during the learning process.
+In order to mitigate unstable learning techniques like Gradient Clipping, 
+Soft Target Update through twin local / target network and Replay Buffer were used.
+
+The Actor brings the advantage of learning in continuous actions space
+without the need for extra layer of optimization procedures required in a value based
+function while the Critic supplies the Actor with knowledge of the performance.
+
+The Actor model is a neural network with 2 hidden layers with size of 400 and 300,
+Tanh is used in the final layer that maps states to actions. Batch normalization is used
+for mini batch training.
+The Critic model is similar to Actor model except the final layer is a fully connected
+layer that maps states and actions to Q-values.
+
+The final layer weights and biases of both the actor and critic
+were initialized from a uniform distribution [−3 × 10−3, 3 × 10−3] and [3 × 10−4, 3 × 10−4]. 
+This was to ensure the initial outputs for the policy and value estimates were near zero. 
 
 ### Hyperparameters
 
