@@ -58,7 +58,8 @@ This was to ensure the initial outputs for the policy and value estimates were n
 
   
 ## Results
-The environment was solved in 100 episodes. Below is a plot with the scores:
+The environment was solved in 100 episodes. An averaged score of 31.06 was reached. 
+The score was averaged about the agents and the last 100 episodes. Below is a plot with the scores:
 
 ![scores](images/scores_plot.png)
 
