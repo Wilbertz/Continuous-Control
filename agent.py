@@ -27,34 +27,32 @@ ExperienceTuple = namedtuple("Experience", field_names=["state", "action", "rewa
 class Agent:
     """ The reinforcement learning agent.  """
     
-    def __init__(self, state_size: int, action_size: int, random_seed: int) -> None:
-        """Initialize an Agent object.
-        
-        Params
-        ======
-            state_size (int): dimension of each state
-            action_size (int): dimension of each action
-            random_seed (int): random seed
+    def __init__(self, state_size: int, action_size: int, seed: int) -> None:
+        """Initializes an Agent object.
+         Args:
+                state_size (int): The dimension of the state vector.
+                action_size (int): The dimension of the action vector.
+                seed (int): The initialization value for the random number generator.
         """
         self.state_size = state_size
         self.action_size = action_size
-        self.seed = random.seed(random_seed)
+        self.seed = random.seed(seed)
         
         # Actor Network (w/ Target Network)
-        self.actor_local = Actor(state_size, action_size, random_seed).to(device)
-        self.actor_target = Actor(state_size, action_size, random_seed).to(device)
+        self.actor_local = Actor(state_size, action_size, seed).to(device)
+        self.actor_target = Actor(state_size, action_size, seed).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR)
 
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, random_seed).to(device)
-        self.critic_target = Critic(state_size, action_size, random_seed).to(device)
+        self.critic_local = Critic(state_size, action_size, seed).to(device)
+        self.critic_target = Critic(state_size, action_size, seed).to(device)
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
 
-        # Noise process
-        self.noise = OrnsteinUhlenbeckNoise(action_size, random_seed)
+        # An Ornstein Uhlenbeck process is used to generate noise.
+        self.noise = OrnsteinUhlenbeckNoise(action_size, seed)
         
-        # Replay memory
-        self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
+        # Replay buffer
+        self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, seed)
     
     def step(self, state, action, reward, next_state, done):
         """Save experience in replay memory, and use random sample from buffer to learn."""
@@ -164,7 +162,9 @@ class OrnsteinUhlenbeckNoise:
 
     def sample(self):
         """
-            Update internal state and return an updated state vector.
+            Updates internal state and returns an updated state vector.
+            Returns:
+               The updated state vector.
         """
         x = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.array([np.random.randn() for _ in range(len(x))])
@@ -177,7 +177,7 @@ class ReplayBuffer:
 
     def __init__(self, action_size: int, buffer_size: int, batch_size: int, seed: int) -> None:
         """
-            Initialize an ExperienceBuffer object.
+            Initialize a ReplayBuffer object.
             Args:
                 action_size (int): The dimension of each action
                 buffer_size (int): The maximum size (number of tuples) of the buffer
@@ -187,7 +187,7 @@ class ReplayBuffer:
         self.action_size = action_size
         self.memory = deque(maxlen=buffer_size)  # internal memory (deque)
         self.batch_size = batch_size
-        self.experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
+        self.experience = ExperienceTuple
         self.seed = random.seed(seed)
     
     def add(self, state, action, reward, next_state, done) -> None:
@@ -204,7 +204,11 @@ class ReplayBuffer:
         self.memory.append(experience)
 
     def sample(self):
-        """Randomly sample a batch of experiences from memory."""
+        """
+            Retrieve a batch size random sample from the ReplayBuffer.
+            Returns:
+               The random sample from the ReplayBuffer.
+        """
         experiences = random.sample(self.memory, k=self.batch_size)
 
         states = torch.from_numpy(np.vstack([e.state for e in experiences if e is not None]))\
@@ -222,8 +226,8 @@ class ReplayBuffer:
 
     def __len__(self) -> int:
         """
-            Return the current number of samples within the experience_buffer..
+            Return the current number of samples within the ReplayBuffer.
             Returns:
-               The current number (int) of samples within the experience buffer.
+               The current number (int) of samples within the ReplayBuffer.
         """
         return len(self.memory)
