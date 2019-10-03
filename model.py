@@ -5,8 +5,14 @@ import torch.nn as nn
 import torch.nn.functional as f
 
 
-def hidden_init(layer) -> None:
+def hidden_init(layer):
+    """"
+        Method used by both the Actor and Critic to initialize the hidden layer.
 
+        Xavier initialisation helps to keep the signal from exploding to a high value or vanishing to zero.
+        In other words, we need to initialize the weights in such a way that the variance
+        remains the same for x and y.
+    """
     fan_in = layer.weight.data.size()[0]
     lim = 1. / np.sqrt(fan_in)
     return -lim, lim
@@ -41,7 +47,11 @@ class Actor(nn.Module):
         self.fc3.weight.data.uniform_(-3e-3, 3e-3)
 
     def forward(self, state):
-        """Build an actor (policy) network that maps states -> actions."""
+        """
+            Forward propagation of input.
+            Args:
+                state (PyTorch model): The observed state used to predict actions
+        """
         x = f.relu(self.bn1(self.fc1(state)))
         x = f.relu(self.fc2(x))
         return f.tanh(self.fc3(x))
@@ -50,9 +60,10 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     """Critic (Value) Model."""
 
-    def __init__(self, state_size, action_size, seed, fcs1_units=400, fc2_units=300) -> None:
+    def __init__(self, state_size: int, action_size: int, seed: int, fcs1_units: int = 400, fc2_units: int = 300) \
+            -> None:
         """Initialize parameters and build model.
-        Params
+        Params: int
         ======
             state_size (int): Dimension of each state
             action_size (int): Dimension of each action
@@ -78,6 +89,7 @@ class Critic(nn.Module):
 
     def forward(self, state, action):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
+
         xs = f.relu(self.bn1(self.fcs1(state)))
         
         x = torch.cat((xs, action), dim=1)
