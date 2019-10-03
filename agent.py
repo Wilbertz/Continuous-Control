@@ -48,7 +48,7 @@ class Agent:
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
 
         # Noise process
-        self.noise = OUNoise(action_size, random_seed)
+        self.noise = OrnsteinUhlenbeckNoise(action_size, random_seed)
         
         # Replay memory
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
@@ -134,8 +134,9 @@ class Agent:
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
 
 
-class OUNoise:
-    """Ornstein-Uhlenbeck process."""
+class OrnsteinUhlenbeckNoise:
+    """Ornstein-Uhlenbeck process. The process is a stationary Gauss–Markov process,
+    which means that it is a Gaussian process, a Markov process, and is temporally homogeneous."""
 
     def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2):
         """Initialize parameters and noise process."""
@@ -159,14 +160,16 @@ class OUNoise:
 
 
 class ReplayBuffer:
-    """Fixed-size buffer to store experience tuples."""
+    """ Fixed-size buffer to store experience tuples. """
 
-    def __init__(self, action_size, buffer_size, batch_size, seed):
-        """Initialize a ReplayBuffer object.
-        Params
-        ======
-            buffer_size (int): maximum size of buffer
-            batch_size (int): size of each training batch
+    def __init__(self, action_size, buffer_size, batch_size, seed) -> None:
+        """
+            Initialize an ExperienceBuffer object.
+            Args:
+                action_size (int): The dimension of each action
+                buffer_size (int): The maximum size (number of tuples) of the buffer
+                batch_size (int): The size of each training batch
+                seed (int): The initialization parameter for the random number generator.
         """
         self.action_size = action_size
         self.memory = deque(maxlen=buffer_size)  # internal memory (deque)
@@ -174,11 +177,11 @@ class ReplayBuffer:
         self.experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
         self.seed = random.seed(seed)
     
-    def add(self, state, action, reward, next_state, done):
-        """Add a new experience to memory."""
-        e = self.experience(state, action, reward, next_state, done)
-        self.memory.append(e)
-    
+    def add(self, state, action, reward, next_state, done) -> None:
+        """ Add a new experience to memory. """
+        experience = self.experience(state, action, reward, next_state, done)
+        self.memory.append(experience)
+
     def sample(self):
         """Randomly sample a batch of experiences from memory."""
         experiences = random.sample(self.memory, k=self.batch_size)
@@ -196,6 +199,10 @@ class ReplayBuffer:
 
         return states, actions, rewards, next_states, dones
 
-    def __len__(self):
-        """Return the current size of internal memory."""
+    def __len__(self) -> int:
+        """
+            Return the current number of samples within the experience_buffer..
+            Returns:
+               The current number (int) of samples within the experience buffer.
+        """
         return len(self.memory)
