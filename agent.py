@@ -22,9 +22,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class Agent:
-    """Interacts with and learns from the environment."""
+    """ The reinforcement learning agent.  """
     
-    def __init__(self, state_size, action_size, random_seed):
+    def __init__(self, state_size: int, action_size: int, random_seed: int) -> None:
         """Initialize an Agent object.
         
         Params
@@ -77,7 +77,7 @@ class Agent:
             experiences = self.memory.sample()
             self.learn(experiences, GAMMA)
         
-    def learn(self, experiences, gamma):
+    def learn(self, experiences, gamma: float):
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
         where:
@@ -120,15 +120,15 @@ class Agent:
         self.soft_update(self.actor_local, self.actor_target, TAU)                     
 
     @staticmethod
-    def soft_update(local_model, target_model, tau):
-        """Soft update model parameters.
-        θ_target = τ*θ_local + (1 - τ)*θ_target
+    def soft_update(local_model, target_model, tau: float) -> None:
+        """
+           Update the model parameters according to this formula:
+           θ_target = τ*θ_local + (1 - τ)*θ_target
 
-        Params
-        ======
-            local_model: PyTorch model (weights will be copied from)
-            target_model: PyTorch model (weights will be copied to)
-            tau (float): interpolation parameter 
+           Args:
+               local_model (PyTorch model): weights will be copied from this model
+               target_model (PyTorch model): weights will be copied to this model
+               tau (float): interpolation parameter, tau = 1 results in complete overwrite
         """
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
@@ -138,8 +138,16 @@ class OrnsteinUhlenbeckNoise:
     """Ornstein-Uhlenbeck process. The process is a stationary Gauss–Markov process,
     which means that it is a Gaussian process, a Markov process, and is temporally homogeneous."""
 
-    def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2):
-        """Initialize parameters and noise process."""
+    def __init__(self, size: int, seed: int, mu: float = 0., theta: float = 0.15, sigma: float = 0.2) -> None:
+        """
+            Initialize an OrnsteinUhlenbeckNoise object.
+            Args:
+                size (int): The dimension of the noise vector.
+                seed (int): The initialization value for the random number generator.
+                mu (float): The mean value for the generated noise.
+                theta (float): The drift value of the process.
+                sigma (float): The diffusion value of the process.
+        """
         self.mu = mu * np.ones(size)
         self.theta = theta
         self.sigma = sigma
@@ -147,12 +155,12 @@ class OrnsteinUhlenbeckNoise:
         self.state = None
         self.reset()
 
-    def reset(self):
-        """Reset the internal state (= noise) to mean (mu)."""
+    def reset(self) -> None:
+        """ Reset the internal state to the mean value. """
         self.state = copy.copy(self.mu)
 
     def sample(self):
-        """Update internal state and return it as a noise sample."""
+        """ Update internal state and return an updated state vector."""
         x = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.array([np.random.randn() for _ in range(len(x))])
         self.state = x + dx
@@ -162,7 +170,7 @@ class OrnsteinUhlenbeckNoise:
 class ReplayBuffer:
     """ Fixed-size buffer to store experience tuples. """
 
-    def __init__(self, action_size, buffer_size, batch_size, seed) -> None:
+    def __init__(self, action_size: int, buffer_size: int, batch_size: int, seed: int) -> None:
         """
             Initialize an ExperienceBuffer object.
             Args:
