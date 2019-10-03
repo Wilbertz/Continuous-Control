@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import random
 import copy
@@ -54,48 +56,59 @@ class Agent:
         # Replay buffer
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, seed)
     
-    def step(self, state, action, reward, next_state, done):
+    def step(self, state: torch.Tensor, action: torch.Tensor, reward: torch.Tensor,
+             next_state: torch.Tensor, done: torch.Tensor) -> None:
         """
             Save the experience within the ReplayBuffer.
                 Args:
-                    state: A state vector.
-                    action: An action vector.
-                    reward: A reward vector.
-                    next_state: A vector containing the states following the given states.
-                    done: A vector containing done flags.
+                    state (torch.Tensor): A state vector.
+                    action (torch.Tensor): An action vector.
+                    reward (torch.Tensor): A reward vector.
+                    next_state (torch.Tensor): A vector containing the states following the given states.
+                    done (torch.Tensor): A vector containing done flags.
         """
         self.memory.add(state, action, reward, next_state, done)
 
-    def act(self, state, add_noise=True):
-        """Returns actions for given state as per current policy."""
+    def act(self, state: torch.Tensor, add_noise: bool = True):
+        """
+            Using the actor network the method return a vector of actions given the state vector
+            using the current policy.
+                Args:
+                    state (torch.Tensor): A state vector.
+                    add_noise (bool): A flag indicating the use of noise.
+                Returns:
+                    An vector of actions.
+        """
         state = torch.from_numpy(state).float().to(device)
         self.actor_local.eval()
         with torch.no_grad():
             action = self.actor_local(state).cpu().data.numpy()
         self.actor_local.train()
-        if add_noise:
+        if add_noise:  # Add Ornstein Uhlenbeck noise.
             action += self.noise.sample()
         return np.clip(action, -1, 1)
 
-    def reset(self):
+    def reset(self) -> None:
+        """ Reset the Ornstein Uhlenbeck process. """
         self.noise.reset()
 
-    def start_learn(self):
+    def start_learn(self) -> None:
+        """ In case there are enough experiences within ReplayBuffer, start learning. """
         if len(self.memory) > BATCH_SIZE:
             experiences = self.memory.sample()
             self.learn(experiences, GAMMA)
         
-    def learn(self, experiences, gamma: float):
-        """Update policy and value parameters using given batch of experience tuples.
-        Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
-        where:
-            actor_target(state) -> action
-            critic_target(state, action) -> Q-value
-
-        Params
-        ======
-            experiences (Tuple[torch.Tensor]): tuple of (s, a, r, s', done) tuples 
-            gamma (float): discount factor
+    def learn(self, experiences: Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor],
+              gamma: float) -> None:
+        """
+            Update policy and value parameters using given batch of experience tuples.
+            Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
+            where:
+                actor_target(state) -> action
+                critic_target(state, action) -> Q-value
+            Args:
+                experiences (Tuple[torch.Tensor]): Tuple of (s, a, r, s', done) tuples
+                gamma (float): discount factor
         """
         states, actions, rewards, next_states, dones = experiences
 
@@ -143,7 +156,7 @@ class Agent:
 
 
 class OrnsteinUhlenbeckNoise:
-    """Ornstein-Uhlenbeck process. The process is a stationary Gauss–Markov process,
+    """ Ornstein-Uhlenbeck process. The process is a stationary Gauss–Markov process,
     which means that it is a Gaussian process, a Markov process, and is temporally homogeneous."""
 
     def __init__(self, size: int, seed: int, mu: float = 0., theta: float = 0.15, sigma: float = 0.2) -> None:
@@ -167,7 +180,7 @@ class OrnsteinUhlenbeckNoise:
         """ Reset the internal state to the mean value. """
         self.state = copy.copy(self.mu)
 
-    def sample(self):
+    def sample(self) :
         """
             Updates internal state and returns an updated state vector.
             Returns:
@@ -197,20 +210,21 @@ class ReplayBuffer:
         self.experience = ExperienceTuple
         self.seed = random.seed(seed)
     
-    def add(self, state, action, reward, next_state, done) -> None:
+    def add(self, state: torch.Tensor, action: torch.Tensor, reward: torch.Tensor,
+            next_state: torch.Tensor, done: torch.Tensor) -> None:
         """
             Create a new experience tuple and add it to the Replay buffer..
             Args:
-                state: A state vector.
-                action: An action vector.
-                reward: A reward vector.
-                next_state: A vector containing the states following the given states.
-                done: A vector containing done flags.
+                state (torch.Tensor): A state vector.
+                action (torch.Tensor): An action vector.
+                reward  (torch.Tensor): A reward vector.
+                next_state  (torch.Tensor): A vector containing the states following the given states.
+                done  (torch.Tensor): A vector containing done flags.
         """
         experience = self.experience(state, action, reward, next_state, done)
         self.memory.append(experience)
 
-    def sample(self):
+    def sample(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         """
             Retrieve a batch size random sample from the ReplayBuffer.
             Returns:
