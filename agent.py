@@ -55,8 +55,15 @@ class Agent:
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, seed)
     
     def step(self, state, action, reward, next_state, done):
-        """Save experience in replay memory, and use random sample from buffer to learn."""
-        # Save experience / reward
+        """
+            Save the experience within the ReplayBuffer.
+                Args:
+                    state: A state vector.
+                    action: An action vector.
+                    reward: A reward vector.
+                    next_state: A vector containing the states following the given states.
+                    done: A vector containing done flags.
+        """
         self.memory.add(state, action, reward, next_state, done)
 
     def act(self, state, add_noise=True):
