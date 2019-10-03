@@ -20,6 +20,9 @@ BUFFER_SIZE = int(1e6)          # replay buffer size
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+""""A named tuple used to collect the different fields within the replay buffer"""
+ExperienceTuple = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
+
 
 class Agent:
     """ The reinforcement learning agent.  """
@@ -160,7 +163,9 @@ class OrnsteinUhlenbeckNoise:
         self.state = copy.copy(self.mu)
 
     def sample(self):
-        """ Update internal state and return an updated state vector."""
+        """
+            Update internal state and return an updated state vector.
+        """
         x = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.array([np.random.randn() for _ in range(len(x))])
         self.state = x + dx
@@ -186,7 +191,15 @@ class ReplayBuffer:
         self.seed = random.seed(seed)
     
     def add(self, state, action, reward, next_state, done) -> None:
-        """ Add a new experience to memory. """
+        """
+            Create a new experience tuple and add it to the Replay buffer..
+            Args:
+                state: A state vector.
+                action: An action vector.
+                reward: A reward vector.
+                next_state: A vector containing the states following the given states.
+                done: A vector containing done flags.
+        """
         experience = self.experience(state, action, reward, next_state, done)
         self.memory.append(experience)
 
