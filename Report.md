@@ -37,6 +37,7 @@ function while the Critic supplies the Actor with knowledge of the performance.
 A single DDPG agent with one Replay Buffer that has experiences 
 collected from all 20 environment agents is used.
 
+The algorithm uses two deep neural networks (actor-critic).
 The Actor model is a neural network with 2 hidden layers with size of 400 and 300,
 Tanh is used in the final layer that maps states to actions. Batch normalization is used
 for mini batch training.
