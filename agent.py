@@ -118,8 +118,9 @@ class Agent:
         q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
         q_targets = rewards + (gamma * q_targets_next * (1 - dones))
-        # Compute critic loss
+        # Retrieve the predicted q value
         q_expected = self.critic_local(states, actions)
+        # Compute the loss as the measn square error between expected and computed q value.
         critic_loss = f.mse_loss(q_expected, q_targets)
         # Minimize the loss
         self.critic_optimizer.zero_grad()
@@ -180,7 +181,7 @@ class OrnsteinUhlenbeckNoise:
         """ Reset the internal state to the mean value. """
         self.state = copy.copy(self.mu)
 
-    def sample(self) :
+    def sample(self):
         """
             Updates internal state and returns an updated state vector.
             Returns:
