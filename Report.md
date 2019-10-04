@@ -15,34 +15,37 @@ for both actor and critic and specific values for most hyperparameters are based
 
 The paper describes an algorithms that uses a Deep Deterministic Policy Gradient (DDPG) agent. 
 
-A model-free, off-policy actor-critic algorithm using deep function approximators 
-that can learn policies in high-dimensional continuous action spaces, is used. Model-free policy 
+This is a  model-free, off-policy actor-critic algorithm using deep function approximators 
+that can learn policies in high-dimensional continuous action spaces. Model-free policy 
 based learning algorithms are algorithms in which the agent learns
 directly from the un-processed observation spaces without domain knowledge.
 
 The Learning algorithm uses the Actor-Critic model in which the Critic model learns the value
 function like DQN and uses it to determine how the Actor’s policy should change. 
 
-This is different compared with DQN that learn indirectly through Q-values tables. The  implemented 
-algorithms learns from the observation spaces using policy gradients. 
-
-Initial attempts to solve the problem had to deal with significant instabilities during the learning 
-process. In order to mitigate unstable learning techniques like Gradient Clipping, 
-Soft Target Update through twin local / target network and Replay Buffer were used.
-
 The Actor brings the advantage of learning in continuous actions space
 without the need for extra layer of optimization procedures required in a value based
 function while the Critic supplies the Actor with knowledge of the performance.
 
-A single DDPG agent with one Replay Buffer that has experiences 
-collected from all 20 environment agents is used.
+This is different compared with DQN that learn indirectly through Q-values tables. The implemented 
+algorithms learns from the observation spaces using policy gradients. 
+
+The algorithms executes the following sequence of steps:
+- A Replay buffer is created.
+- Actor and Critic network are created and initialized. This includes Xavier initialisation of the hidden layers.
+ The actor network does the policy approximation while the critic does the Q value estimation.
+- The agent is trained for some episodes up to a maximum number of time-steps (max_t) in each episode, 
+unless it terminates earlier.
+- The training loop contains 2 processes: acting and learning.
+- In the acting step, the agent uses the Actor network to get an action for a given state.
+- In the learning step, the critic network is used as a feedback to the Actor network.
+- Finally, actor and critic weights are updated from the current weights of the local actor and critic networks.
 
 The algorithm uses two deep neural networks (actor-critic).
 The Actor model is a neural network with 2 hidden layers with size of 400 and 300,
-Tanh is used in the final layer that maps states to actions. Batch normalization is used
-for mini batch training.
-The Critic model is similar to Actor model except the final layer is a fully connected
-layer that maps states and actions to Q-values.
+Tanh is used in the final layer that maps states to actions. Batch normalization is used for mini batch training.
+The Critic model is similar to Actor model except the final layer is a fully connected layer that maps states and 
+actions to Q-values.
 
 The final layer weights and biases of both the actor and critic
 were initialized from a uniform distribution [−3 × 10−3, 3 × 10−3] and [3 × 10−3, 3 × 10−3]. 
