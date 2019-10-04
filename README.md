@@ -29,7 +29,6 @@ torque applicable to two joints. Every entry in the action vector should be a nu
     - Continuous_Control.ipynb (The Jupyter notebook)
     - model.py (The neural network)
     - agent.py (The agent used for learning)
-    - learning.py (A collection of methods for learning)
     - checkpoint_actor.pth (The neural network weights for the actor)
     - checkpoint_critic.pth (The neural network weights for the critic)
     - images /  
