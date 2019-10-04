@@ -9,9 +9,11 @@ def hidden_init(layer):
     """"
         Method used by both the Actor and Critic to initialize the hidden layer.
 
-        Xavier initialisation helps to keep the signal from exploding to a high value or vanishing to zero.
-        In other words, we need to initialize the weights in such a way that the variance
-        remains the same for x and y.
+        Xavier initialisation helps to keep the signal from exploding to a high value or
+        vanishing to zero. In other words, we need to initialize the weights in such a way
+        that the variance remains the same for x and y.
+        Args:
+                layer: The hidden layer that has to be initialized.
     """
     fan_in = layer.weight.data.size()[0]
     lim = 1. / np.sqrt(fan_in)
@@ -21,15 +23,18 @@ def hidden_init(layer):
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, seed, fc1_units=400, fc2_units=300) -> None:
-        """Initialize parameters and build model.
-        Params
-        ======
-            state_size (int): Dimension of each state
-            action_size (int): Dimension of each action
-            seed (int): Random seed
-            fc1_units (int): Number of nodes in first hidden layer
-            fc2_units (int): Number of nodes in second hidden layer
+    def __init__(self, state_size: int, action_size: int, seed: int, fc1_units: int = 400, fc2_units: int = 300) \
+            -> None:
+        """
+           Initialize fields and build the model. The architecture of the network is based on the parameters
+           given in  "Continuous control with deep reinforcement learning" (https://arxiv.org/abs/1509.02971).
+                Args:
+                    state_size (int): Dimension of each state
+                    action_size (int): Dimension of each action
+                    seed (int): Random seed
+                    fc1_units (int): Number of nodes in first hidden layer
+                    fc2_units (int): Number of nodes in second hidden layer
+
         """
         super(Actor, self).__init__()
         self.seed = torch.manual_seed(seed)
@@ -62,14 +67,15 @@ class Critic(nn.Module):
 
     def __init__(self, state_size: int, action_size: int, seed: int, fcs1_units: int = 400, fc2_units: int = 300) \
             -> None:
-        """Initialize parameters and build model.
+        """Initialize parameters and build model. The architecture of the network is based on the parameters
+        given in  "Continuous control with deep reinforcement learning" (https://arxiv.org/abs/1509.02971).
         Params: int
         ======
-            state_size (int): Dimension of each state
-            action_size (int): Dimension of each action
-            seed (int): Random seed
-            fcs1_units (int): Number of nodes in the first hidden layer
-            fc2_units (int): Number of nodes in the second hidden layer
+            state_size (int): Dimension of state vector.
+            action_size (int): Dimension of action vector.
+            seed (int): Used to initialize random number generator.
+            fcs1_units (int): Number of nodes in hidden layer 1
+            fc2_units (int): Number of nodes in hidden layer 2
         """
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
