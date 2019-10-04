@@ -14,9 +14,10 @@ def hidden_init(layer):
         that the variance remains the same for x and y.
         Args:
                 layer: The hidden layer that has to be initialized.
+        Returns:
+                A tuple of limit vectors.
     """
-    fan_in = layer.weight.data.size()[0]
-    lim = 1. / np.sqrt(fan_in)
+    lim = 1. / np.sqrt(layer.weight.data.size()[0])
     return -lim, lim
 
 
@@ -47,6 +48,9 @@ class Actor(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self) -> None:
+        """
+            Reset the nodes weights.
+        """
         self.fc1.weight.data.uniform_(*hidden_init(self.fc1))
         self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
         self.fc3.weight.data.uniform_(-3e-3, 3e-3)
@@ -56,6 +60,8 @@ class Actor(nn.Module):
             Forward propagation of input.
             Args:
                 state (PyTorch model): The observed state used to predict actions
+            Returns:
+                An action vector.
         """
         x = f.relu(self.bn1(self.fc1(state)))
         x = f.relu(self.fc2(x))
