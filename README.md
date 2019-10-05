@@ -12,14 +12,32 @@
 <p align="center">
     <img src="./images/random_agent.gif" width="800" title="Random Agent" alt="Random Agent.">
 </p>
+This projects trains a Actor Critic Policy Gradient Network agent to keep its hand near a goal location using
+the [Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#reacher) environment.
+
 In this environment, a double-jointed arm can move to target locations. 
 A reward of +0.1 is provided for each step that the agent's hand is in the goal location. 
 Thus, the goal of your agent is to maintain its position at the target location for as many time steps 
 as possible.
 
 The observation space consists of 33 variables corresponding to position, rotation, velocity, 
-and angular velocities of the arm. Each action is a vector with four numbers, corresponding to 
+and angular velocities of the arm. 
+
+Each action is a vector with four numbers, corresponding to 
 torque applicable to two joints. Every entry in the action vector should be a number between -1 and 1.
+
+There are two separate versions of the environment:
+
+- The first version contains a single agent.  
+- The second version contains 20 identical agents, each with its own copy of the environment. 
+
+This project solves the second version with 20 identical agents. 
+
+In order to solve the environment the agents must get an average score of +30 (over 100 consecutive episodes 
+and over all agents). 
+
+After each episode the average of the scores for all 20 agents is computed. The environment is considered solved, 
+when this average over 100 periods exceeds the threshold of 30. 
 
 ## Directory Structure <a name="directoryStructure"></a>
 
