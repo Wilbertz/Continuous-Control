@@ -12,9 +12,9 @@
 <p align="center">
     <img src="./images/random_agent.gif" width="800" title="Random Agent" alt="Random Agent.">
 </p>
-This projects trains a Actor Critic Policy Gradient Network agent to keep its hand near a goal location using
-the [Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#reacher) environment.
 
+Using the [Reacher](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#reacher) 
+environment this projects trains a Actor Critic Policy Gradient Network agent to keep its hand near a goal location.
 In this environment, a double-jointed arm can move to target locations. 
 A reward of +0.1 is provided for each step that the agent's hand is in the goal location. 
 Thus, the goal of your agent is to maintain its position at the target location for as many time steps 
