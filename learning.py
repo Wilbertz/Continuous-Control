@@ -14,13 +14,12 @@ from agent import Agent
 def ddpg(n_episodes=2000, max_t=1000):
     scores_deque = deque(maxlen=100)
     scores = []
-    max_score = -np.Inf
-    for i_episode in range(1, n_episodes + 1):
-        env_info = env.reset(train_mode=True)[brain_name]
-        states = env_info.vector_observations
 
-        agent.reset()
-        episode_scores = np.zeros(num_agents)
+    for i_episode in range(1, n_episodes + 1):
+        env_info = env.reset(train_mode=True)[brain_name]  # reset the environment
+        states = env_info.vector_observations
+        agent.reset()  # reset the agent noise
+        score = np.zeros(n_agents)
 
         for t in range(max_t):
             actions = agent.act(states)
@@ -44,4 +43,5 @@ def ddpg(n_episodes=2000, max_t=1000):
             torch.save(agent.actor_local.state_dict(), 'checkpoint_actor.pth')
             torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
+
     return scores
