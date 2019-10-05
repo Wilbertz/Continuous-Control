@@ -66,7 +66,7 @@ Follow the instructions in Continuous_Control.ipynb to get started.
 
 In order to train a network you have to create an agent:
 
-agent = Agent(state_size=state_size, action_size=action_size, random_seed=random_seed)
+agent = Agent(state_size=state_size, action_size=action_size, n_agents=num_agents, seed=random_seed)
 
 Execute the learning method ddpg. (This will take around 80 minute when using GPU.)
 
