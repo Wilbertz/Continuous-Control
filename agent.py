@@ -29,15 +29,17 @@ ExperienceTuple = namedtuple("Experience", field_names=["state", "action", "rewa
 class Agent:
     """ The reinforcement learning agent.  """
     
-    def __init__(self, state_size: int, action_size: int, seed: int) -> None:
+    def __init__(self, state_size: int, action_size: int, n_agents: int, seed: int) -> None:
         """Initializes an Agent object.
          Args:
                 state_size (int): The dimension of the state vector.
                 action_size (int): The dimension of the action vector.
+                n_agents (int): The number of agents.
                 seed (int): The initialization value for the random number generator.
         """
         self.state_size = state_size
         self.action_size = action_size
+        self.n_agents = n_agents
         self.seed = random.seed(seed)
         
         # Actor Network (w/ Target Network)
@@ -67,7 +69,13 @@ class Agent:
                     next_state (torch.Tensor): A vector containing the states following the given states.
                     done (torch.Tensor): A vector containing done flags.
         """
-        self.memory.add(state, action, reward, next_state, done)
+        for i in range(self.n_agents):
+            self.memory.add(state[i,:], action[i,:], reward[i], next_state[i,:], done[i])
+            
+        """ In case there are enough experiences within ReplayBuffer, start learning. """      
+        if len(self.memory) > BATCH_SIZE:
+            experiences = self.memory.sample()
+            self.learn(experiences, GAMMA)
 
     def act(self, state: torch.Tensor, add_noise: bool = True):
         """
@@ -91,12 +99,6 @@ class Agent:
     def reset(self) -> None:
         """ Reset the Ornstein Uhlenbeck process. """
         self.noise.reset()
-
-    def start_learn(self) -> None:
-        """ In case there are enough experiences within ReplayBuffer, start learning. """
-        if len(self.memory) > BATCH_SIZE:
-            experiences = self.memory.sample()
-            self.learn(experiences, GAMMA)
         
     def learn(self, experiences: Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor],
               gamma: float) -> None:
